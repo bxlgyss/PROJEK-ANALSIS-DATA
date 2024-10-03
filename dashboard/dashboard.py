@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.title('DASHBOARD HASIL ANALISIS DATA E-COMMERCE PUBLIC DATASET ')
 
 # Memuat data 
-main_data_df = pd.read_csv('PROJEK ANALSIS DATA/dasboard/main_data.csv')
+main_data_df = pd.read_csv('dashboard/main_data.csv')
 
 # Menghitung distribusi kategori produk
 product_counts = main_data_df['product_category_name'].value_counts()
