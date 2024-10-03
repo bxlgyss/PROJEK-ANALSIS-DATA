@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 
 st.title('DASHBOARD HASIL ANALISIS DATA E-COMMERCE PUBLIC DATASET ')
 
-main_data_df = pd.read_csv('main_data.csv')
+main_data_df = pd.read_csv('dashboard/main_data.csv')
 
 # Memuat data geolocation terpisah
-geolocation_df = pd.read_csv('geolocation.csv')
+geolocation_df = pd.read_csv('dashboard/geolocation.csv')
 
 # Menghitung distribusi kategori produk
 product_counts = main_data_df['product_category_name_english'].value_counts()
