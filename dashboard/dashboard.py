@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-st.title('DASHBOARD HASIL ANALISIS DATA E-COMMERCE PUBLIC DATASET ')
+st.title('DASHBOARD HASIL ANALISIS DATA E-COMMERCE PUBLIC DATASET')
 
 main_data_df = pd.read_csv('dashboard/main_data.csv')
 
@@ -25,7 +25,7 @@ st.dataframe(top_10_product_counts)
 
 # Visualisasi distribusi kategori produk menggunakan bar plot (10 teratas)
 plt.figure(figsize=(12, 8))
-sns.barplot(x=top_10_product_counts.values, y=top_10_product_counts.index, palette="viridis")
+sns.barplot(x=top_10_product_counts.values, y=top_10_product_counts.index, hue=top_10_product_counts.index, palette="viridis", legend=False)
 plt.title("Distribusi 10 Kategori Produk Teratas")
 plt.xlabel("Jumlah Pembelian")
 plt.ylabel("Kategori Produk")
@@ -53,7 +53,7 @@ if 'customer_city' in main_data_df.columns:
 
     # Visualisasi distribusi lokasi pelanggan menggunakan bar plot (10 teratas)
     plt.figure(figsize=(12, 8))
-    sns.barplot(x=top_10_customer_locations.values, y=top_10_customer_locations.index, palette="coolwarm")
+    sns.barplot(x=top_10_customer_locations.values, y=top_10_customer_locations.index, hue=top_10_customer_locations.index, palette="coolwarm", legend=False)
     plt.title("Distribusi 10 Kota Pelanggan Teratas")
     plt.xlabel("Jumlah Pelanggan")
     plt.ylabel("Kota Pelanggan")
@@ -74,10 +74,11 @@ st.title("Frekuensi Metode Pembayaran")
 
 # Buat bar plot menggunakan Seaborn
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='payment_type', y='transaction_count', data=payment_behavior, palette='viridis', ax=ax)
+sns.barplot(x='payment_type', y='transaction_count', data=payment_behavior, hue='payment_type', palette='viridis', ax=ax)
 ax.set_title('Frekuensi Penggunaan Metode Pembayaran')
 ax.set_ylabel('Jumlah Transaksi')
 ax.set_xlabel('Metode Pembayaran')
+ax.set_xticks(range(len(ax.get_xticklabels()))) 
 ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
 
 # Tampilkan plot di Streamlit
@@ -93,7 +94,7 @@ st.title("Rata-Rata Nilai Pembayaran per Metode Pembayaran")
 
 # Buat bar plot menggunakan Seaborn
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, palette='magma', ax=ax)
+sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, hue='payment_type', palette='magma', ax=ax)
 ax.set_title('Rata-Rata Nilai Pembayaran per Metode Pembayaran')
 ax.set_ylabel('Rata-Rata Nilai Pembayaran (Rupiah)')
 ax.set_xlabel('Metode Pembayaran')
@@ -138,7 +139,7 @@ filtered_data = avg_delivery_time[
 # Membuat heatmap dengan data terfilter
 plt.figure(figsize=(12, 6))
 heatmap_data = filtered_data.pivot_table(index='seller_location', columns='customer_location', values='average_delivery_time')
-sns.heatmap(heatmap_data, cmap='YlGnBu', annot=True, fmt=".1f", cbar_kws={'label': 'Average Delivery Time (hours)'})
+sns.heatmap(heatmap_data.fillna(0), cmap='YlGnBu', annot=True, fmt=".1f", cbar_kws={'label': 'Average Delivery Time (hours)'})
 plt.title('Average Delivery Time by Seller and Customer Location (Top 10)')
 plt.xlabel('Customer Location')
 plt.ylabel('Seller Location')
@@ -169,7 +170,7 @@ top_locations = merged_data.groupby('customer_city')['price'].sum().nlargest(5).
 filtered_data = merged_data[(merged_data['product_category_name'].isin(top_categories)) &
                              (merged_data['customer_city'].isin(top_locations))]
 
-#Mengelompokkan data berdasarkan lokasi pelanggan dan kategori produk untuk visualisasi
+# Mengelompokkan data berdasarkan lokasi pelanggan dan kategori produk untuk visualisasi
 sales_by_category_location = filtered_data.groupby(['customer_city', 'product_category_name'])['price'].sum().reset_index()
 sales_by_category_location.columns = ['customer_city', 'product_category_name', 'total_sales']
 
@@ -178,7 +179,7 @@ heatmap_data = sales_by_category_location.pivot(index='customer_city', columns='
 
 # Menampilkan heatmap di Streamlit
 plt.figure(figsize=(10, 6))
-sns.heatmap(heatmap_data, cmap='YlGnBu', annot=True, fmt=".1f")
+sns.heatmap(heatmap_data.fillna(0), cmap='YlGnBu', annot=True, fmt=".1f")
 plt.title('Total Sales by Customer Location and Product Category')
 plt.xlabel('Product Category')
 plt.ylabel('Customer Location')
