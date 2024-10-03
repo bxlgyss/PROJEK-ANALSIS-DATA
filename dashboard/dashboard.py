@@ -74,12 +74,14 @@ st.title("Frekuensi Metode Pembayaran")
 
 # Buat bar plot menggunakan Seaborn
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='payment_type', y='transaction_count', data=payment_behavior, hue='payment_type', palette='viridis', ax=ax)
+sns.barplot(x='payment_type', y='transaction_count', data=payment_behavior, palette='viridis', ax=ax)
 ax.set_title('Frekuensi Penggunaan Metode Pembayaran')
 ax.set_ylabel('Jumlah Transaksi')
 ax.set_xlabel('Metode Pembayaran')
-ax.set_xticks(range(len(ax.get_xticklabels()))) 
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
+# Mengatur label pada sumbu X
+ax.set_xticks(range(len(payment_behavior['payment_type'])))
+ax.set_xticklabels(payment_behavior['payment_type'], rotation=45)
 
 # Tampilkan plot di Streamlit
 st.pyplot(fig)
@@ -94,15 +96,19 @@ st.title("Rata-Rata Nilai Pembayaran per Metode Pembayaran")
 
 # Buat bar plot menggunakan Seaborn
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, hue='payment_type', palette='magma', ax=ax)
+sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, palette='magma', ax=ax)
 ax.set_title('Rata-Rata Nilai Pembayaran per Metode Pembayaran')
 ax.set_ylabel('Rata-Rata Nilai Pembayaran (Rupiah)')
 ax.set_xlabel('Metode Pembayaran')
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
+# Mengatur label pada sumbu X
+ax.set_xticks(range(len(average_payment_value['payment_type'])))
+ax.set_xticklabels(average_payment_value['payment_type'], rotation=45)
 
 # Tampilkan plot di Streamlit
 st.pyplot(fig)
 plt.close()
+
 
 # Judul 
 st.title("Rata-rata Waktu Pengiriman Berdasarkan Lokasi Penjual dan Pelanggan")
