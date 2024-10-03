@@ -74,7 +74,7 @@ st.title("Frekuensi Metode Pembayaran")
 
 # Buat bar plot menggunakan Seaborn
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='payment_type', y='transaction_count', data=payment_behavior, palette='viridis', ax=ax)
+sns.barplot(x='payment_type', y='transaction_count', data=payment_behavior, palette='viridis', hue='payment_type', legend=False, ax=ax)
 ax.set_title('Frekuensi Penggunaan Metode Pembayaran')
 ax.set_ylabel('Jumlah Transaksi')
 ax.set_xlabel('Metode Pembayaran')
@@ -96,7 +96,7 @@ st.title("Rata-Rata Nilai Pembayaran per Metode Pembayaran")
 
 # Buat bar plot menggunakan Seaborn
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, palette='magma', ax=ax)
+sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, palette='magma', hue='payment_type', legend=False, ax=ax)
 ax.set_title('Rata-Rata Nilai Pembayaran per Metode Pembayaran')
 ax.set_ylabel('Rata-Rata Nilai Pembayaran (Rupiah)')
 ax.set_xlabel('Metode Pembayaran')
