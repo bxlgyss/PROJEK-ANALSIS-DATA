@@ -5,11 +5,13 @@ import matplotlib.pyplot as plt
 
 st.title('DASHBOARD HASIL ANALISIS DATA E-COMMERCE PUBLIC DATASET ')
 
-# Memuat data 
-main_data_df = pd.read_csv('dashboard/main_data.csv')
+main_data_df = pd.read_csv('main_data.csv')
+
+# Memuat data geolocation terpisah
+geolocation_df = pd.read_csv('geolocation.csv')
 
 # Menghitung distribusi kategori produk
-product_counts = main_data_df['product_category_name'].value_counts()
+product_counts = main_data_df['product_category_name_english'].value_counts()
 
 # Mengambil 10 kategori produk teratas
 top_10_product_counts = product_counts.head(10)
@@ -23,17 +25,14 @@ st.dataframe(top_10_product_counts)
 
 # Visualisasi distribusi kategori produk menggunakan bar plot (10 teratas)
 plt.figure(figsize=(12, 8))
-sns.barplot(x=top_10_product_counts.values, y=top_10_product_counts.index, palette="viridis")
+sns.barplot(x=top_10_product_counts.values, y=top_10_product_counts.index, hue=top_10_product_counts.index, color= 'lightblue', legend=False)
 plt.title("Distribusi 10 Kategori Produk Teratas")
 plt.xlabel("Jumlah Pembelian")
 plt.ylabel("Kategori Produk")
 
 # Menampilkan plot di Streamlit
 st.pyplot(plt)
-plt.close()  # Menutup plot untuk menghindari penampilan yang tidak diinginkan
-
-# Menampilkan informasi tambahan jika diperlukan
-st.write("Total Data: ", len(main_data_df))
+plt.close()
 
 # Menghitung distribusi lokasi pelanggan berdasarkan kota
 if 'customer_city' in main_data_df.columns:
@@ -58,7 +57,7 @@ if 'customer_city' in main_data_df.columns:
 
     # Menampilkan plot di Streamlit
     st.pyplot(plt)
-    plt.close() 
+    plt.close()
 
 else:
     st.write("Kolom 'customer_city' tidak ditemukan dalam DataFrame.")
@@ -76,11 +75,13 @@ sns.barplot(x='payment_type', y='transaction_count', data=payment_behavior, pale
 ax.set_title('Frekuensi Penggunaan Metode Pembayaran')
 ax.set_ylabel('Jumlah Transaksi')
 ax.set_xlabel('Metode Pembayaran')
+ax.set_xticks(range(len(ax.get_xticklabels()))) 
 ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+
 
 # Tampilkan plot di Streamlit
 st.pyplot(fig)
-plt.close()  # Menutup plot
+plt.close()
 
 # Menghitung rata-rata nilai pembayaran per metode pembayaran
 average_payment_value = main_data_df.groupby('payment_type')['payment_value'].mean().reset_index()
@@ -91,7 +92,7 @@ st.title("Rata-Rata Nilai Pembayaran per Metode Pembayaran")
 
 # Buat bar plot menggunakan Seaborn
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, palette='magma', ax=ax)
+sns.barplot(x='payment_type', y='average_payment_value', data=average_payment_value, color='lightblue', ax=ax)
 ax.set_title('Rata-Rata Nilai Pembayaran per Metode Pembayaran')
 ax.set_ylabel('Rata-Rata Nilai Pembayaran (Rupiah)')
 ax.set_xlabel('Metode Pembayaran')
@@ -99,10 +100,11 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
 
 # Tampilkan plot di Streamlit
 st.pyplot(fig)
-plt.close() 
+plt.close()
 
 # Judul 
 st.title("Rata-rata Waktu Pengiriman Berdasarkan Lokasi Penjual dan Pelanggan")
+
 # Mengambil kolom yang relevan untuk order_data
 order_data = main_data_df[['order_id', 'order_purchase_timestamp', 'order_approved_at', 
                              'seller_city', 'seller_state', 'customer_city', 'customer_state']].copy()
@@ -151,7 +153,10 @@ st.title("Total Penjualan Berdasarkan Lokasi Pelanggan dan Kategori Produk")
 
 # Mengambil kolom yang relevan untuk order_data
 merged_data = main_data_df[['order_id', 'customer_id', 'product_id', 'product_category_name',
-                             'price', 'customer_city', 'customer_zip_code_prefix', 'geolocation_zip_code_prefix']].copy()
+                             'price', 'customer_city', 'customer_zip_code_prefix']].copy()
+
+# Menambahkan data geolocation berdasarkan zip_code
+merged_data = pd.merge(merged_data, geolocation_df, left_on='customer_zip_code_prefix', right_on='geolocation_zip_code_prefix', how='left')
 
 # Menentukan 5 kategori produk teratas berdasarkan penjualan
 top_categories = merged_data.groupby('product_category_name')['price'].sum().nlargest(5).index
@@ -180,4 +185,4 @@ plt.xticks(rotation=45)
 
 # Tampilkan plot di Streamlit
 st.pyplot(plt)
-plt.close()  
+plt.close()
